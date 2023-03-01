@@ -1,0 +1,1 @@
+CREATE DATABASE fhir_database_test;
