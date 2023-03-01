@@ -1,1 +1,1 @@
-CREATE DATABASE fhir_database_test;
+CREATE DATABASE fhir_database;
