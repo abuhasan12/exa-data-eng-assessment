@@ -1,7 +1,6 @@
 CREATE TABLE encounters (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
-  request_url VARCHAR(50),
   resource_type VARCHAR(50),
   resource_id VARCHAR(36),
   status VARCHAR(25),
@@ -18,11 +17,11 @@ CREATE TABLE encounters (
   participant_individual TEXT,
   period_start TIMESTAMP WITH TIME ZONE,
   period_end TIMESTAMP WITH TIME ZONE,
+  reason_code_coding JSONB,
+  hospitalization_discharge_disposition_coding JSONB,
+  hospitalization_discharge_disposition TEXT,
   location_reference TEXT,
   location TEXT,
   service_provider_reference TEXT,
-  service_provider TEXT,
-  reason_code_coding JSONB,
-  hospitalization_discharge_disposition_coding JSONB,
-  hospitalization_discharge_disposition TEXT
+  service_provider TEXT
 );
