@@ -3,7 +3,7 @@ import psycopg2
 from src.database.create_database import *
 from tests.test_files.test_config import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD
 
-class TestCreateInfrastructure(unittest.TestCase):
+class TestCreateDatabase(unittest.TestCase):
     def setUp(self):
         self.server_config = {
             'HOST':DB_HOST,
