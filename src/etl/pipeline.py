@@ -16,7 +16,16 @@ def check_resource_format(resource):
 
 def pipeline(file_paths, server_config):
     data_rows = {
-        'Encounter': []
+        'CarePlan': [],
+        'Claim': [],
+        'Condition': [],
+        'DiagnosticReport': [],
+        'DocumentReference': [],
+        'Encounter': [],
+        'ExplanationOfBenefit': [],
+        'MedicationRequest': [],
+        'Patient': [],
+        'Procedure': []
     }
     
     conn = psycopg2.connect(
@@ -33,7 +42,7 @@ def pipeline(file_paths, server_config):
 
         resource_type = resource['resource']['resourceType']
 
-        if resource['resource']['resourceType'] == 'Encounter':
+        if resource['resource']['resourceType'] in data_rows:
             transformed_resource = transform.transform_resource(resource)
             data_rows[resource_type].append(transformed_resource)
         
