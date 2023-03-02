@@ -31,7 +31,7 @@ def create_database(server_config):
         port=server_config['PORT'],
         user=server_config['USER'],
         password=server_config['PASSWORD'],
-        database='fhir_database'
+        database=server_config['DATABASE']
     )
     # Create tables in database
     execute_sql_file(conn=conn, sql_file='src/database/database_sql/tables.sql')
@@ -49,7 +49,7 @@ def main():
         'PORT': config.get('Server', 'PORT'),
         'USER': config.get('Server', 'USER'),
         'PASSWORD': config.get('Server', 'PASSWORD'),
-        'DATABASE': config.get('Server', 'DATABASE', fallback=None)
+        'DATABASE': config.get('Server', 'DATABASE')
     }
 
     create_database(server_config=server_config)

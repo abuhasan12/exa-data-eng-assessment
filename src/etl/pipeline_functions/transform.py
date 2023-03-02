@@ -10,7 +10,7 @@ def get_value_for_col(resource, path_to_value):
             value = value[nested_key]
     if isinstance(value, list):
         value = json.dumps(value, ensure_ascii=False)
-    elif isinstance(value, str):
+    if isinstance(value, str):
         value = value.replace("'", "''")
     return value
 
