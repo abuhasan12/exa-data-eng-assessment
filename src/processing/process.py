@@ -3,6 +3,7 @@ import configparser
 import json
 import psycopg2
 from schemas import SCHEMAS
+from src.etl.pipeline.extract import extract_resources
 
 data_dir = "data/"
 file_paths = [os.path.join(data_dir, file_name) for file_name in os.listdir(data_dir)]

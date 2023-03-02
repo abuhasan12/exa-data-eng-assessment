@@ -5,43 +5,95 @@ from tests.test_files.test_config import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD
 
 class TestCreateInfrastructure(unittest.TestCase):
     def setUp(self):
-        self.client = PostgresClient(
-            host=DB_HOST,
-            port=DB_PORT,
-            user=DB_USER,
-            password=DB_PASSWORD
+        self.server_config = {
+            'HOST':DB_HOST,
+            'PORT':DB_PORT,
+            'USER':DB_USER,
+            'PASSWORD':DB_PASSWORD,
+            'DATABASE': None
+        }
+
+    def test_execute_sql_file_database(self):
+        execute_sql_file(server_config=self.server_config, sql_file='tests/test_files/test_database.sql', autocommit=True)
+        conn = psycopg2.connect(
+            host=self.server_config['HOST'],
+            port=self.server_config['PORT'],
+            user=self.server_config['USER'],
+            password=self.server_config['PASSWORD']
         )
+        cursor = conn.cursor()
+        cursor.execute("SELECT datname FROM pg_database WHERE datname='fhir_database_test'")
+        result = cursor.fetchall()
+        conn.commit()
+        self.assertEqual(result[0][0], 'fhir_database_test')
+        cursor.close()
+        conn.close()
+
+    def test_execute_sql_file_tables(self):
+        execute_sql_file(server_config=self.server_config, sql_file='tests/test_files/test_database.sql', autocommit=True)
+        execute_sql_file(server_config=self.server_config, sql_file='tests/test_files/test_tables.sql', replace_database='fhir_database_test')
+        conn = psycopg2.connect(
+            host=self.server_config['HOST'],
+            port=self.server_config['PORT'],
+            user=self.server_config['USER'],
+            password=self.server_config['PASSWORD'],
+            database='fhir_database_test'
+        )
+        cursor = conn.cursor()
+        cursor.execute("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'test_table_one')")
+        result = cursor.fetchall()
+        self.assertEqual(result[0][0], True)
+        cursor.execute("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'test_table_two')")
+        result = cursor.fetchall()
+        self.assertEqual(result[0][0], True)
+        cursor.close()
+        conn.close()
 
     def test_create_database(self):
-        create_database(client=self.client, database_sql='tests/test_files/test_database.sql')
-        self.client.connect_default()
-        result = self.client.run_query("SELECT datname FROM pg_database WHERE datname='fhir_database_test'")
+        create_database(server_config=self.server_config, new_database='fhir_database_test', database_sql='tests/test_files/test_database.sql', tables_sql='tests/test_files/test_tables.sql')
+        conn = psycopg2.connect(
+            host=self.server_config['HOST'],
+            port=self.server_config['PORT'],
+            user=self.server_config['USER'],
+            password=self.server_config['PASSWORD']
+        )
+        cursor = conn.cursor()
+        cursor.execute("SELECT datname FROM pg_database WHERE datname='fhir_database_test'")
+        result = cursor.fetchall()
+        conn.commit()
         self.assertEqual(result[0][0], 'fhir_database_test')
-        self.client.close_connection()
-
-    def test_create_tables(self):
-        create_database(client=self.client, database_sql='tests/test_files/test_database.sql')
-        create_tables(client=self.client, database='fhir_database_test', tables_sql='tests/test_files/test_tables.sql')
-        self.client.connect(database='fhir_database_test')
-        result = self.client.run_query("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'test_table_one')")
+        cursor.close()
+        conn.close()
+        conn = psycopg2.connect(
+            host=self.server_config['HOST'],
+            port=self.server_config['PORT'],
+            user=self.server_config['USER'],
+            password=self.server_config['PASSWORD'],
+            database='fhir_database_test'
+        )
+        cursor = conn.cursor()
+        cursor.execute("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'test_table_one')")
+        result = cursor.fetchall()
         self.assertEqual(result[0][0], True)
-        result = self.client.run_query("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'test_table_two')")
+        cursor.execute("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'test_table_two')")
+        result = cursor.fetchall()
         self.assertEqual(result[0][0], True)
-        self.client.close_connection()
-
-    def test_create_infrastructure(self):
-        create_infrastructure(client=self.client, new_database='fhir_database_test', database_sql='tests/test_files/test_database.sql', tables_sql='tests/test_files/test_tables.sql')
-        self.client.connect_default()
-        result = self.client.run_query("SELECT datname FROM pg_database WHERE datname='fhir_database_test'")
-        self.assertEqual(result[0][0], 'fhir_database_test')
-        self.client.close_connection()
+        cursor.close()
+        conn.close()
 
     def tearDown(self):
-        self.client.connect_default()
-        self.client.enable_autocommit()
-        self.client.add_sql("DROP DATABASE IF EXISTS fhir_database_test")
-        self.client.commit_sql()
-        self.client.close_connection()
+        conn = psycopg2.connect(
+            host=self.server_config['HOST'],
+            port=self.server_config['PORT'],
+            user=self.server_config['USER'],
+            password=self.server_config['PASSWORD']
+        )
+        cursor = conn.cursor()
+        conn.autocommit = True
+        cursor.execute("DROP DATABASE IF EXISTS fhir_database_test")
+        conn.commit()
+        cursor.close()
+        conn.close()
 
 if __name__ == '__main__':
     unittest.main()
