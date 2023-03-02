@@ -3,6 +3,7 @@ import configparser
 from src.etl.pipeline_functions import extract, transform, load
 import sys
 import psycopg2
+from src.etl.resources.schemas import SCHEMAS
 
 def check_resource_format(resource):
     if 'resource' not in resource:
@@ -37,12 +38,16 @@ def pipeline(file_paths, server_config):
             data_rows[resource_type].append(transformed_resource)
         
             if len(data_rows[resource_type]) == 1000:
-                load.upload_resources(conn, resource_type, data_rows[resource_type])
+                table_name = SCHEMAS[resource_type]['table_meta']['table_name']
+                number_of_cols = len(SCHEMAS[resource_type]['json_schema'])
+                load.upload_resources(conn, table_name, number_of_cols, data_rows[resource_type])
                 data_rows[resource_type] = []
 
     for resource_type, rows in data_rows.items():
+        table_name = SCHEMAS[resource_type]['table_meta']['table_name']
+        number_of_cols = len(SCHEMAS[resource_type]['json_schema'])
         if rows:
-            load.upload_resources(conn, resource_type, rows)
+            load.upload_resources(conn, table_name, number_of_cols, rows)
             
     conn.close()
 

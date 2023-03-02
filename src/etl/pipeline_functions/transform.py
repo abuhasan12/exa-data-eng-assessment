@@ -1,5 +1,5 @@
 import json
-from src.etl.transform_resources.schemas import SCHEMAS
+from src.etl.resources.schemas import SCHEMAS
 
 def get_value_for_col(resource, path_to_value):
     value = resource
@@ -15,7 +15,7 @@ def get_value_for_col(resource, path_to_value):
     return value
 
 def transform_resource(resource):
-    schema = SCHEMAS[resource['resource']['resourceType']]
+    schema = SCHEMAS[resource['resource']['resourceType']]['json_schema']
     new_row = []
     for col, path_to_value in schema.items():
         value = get_value_for_col(resource, path_to_value)

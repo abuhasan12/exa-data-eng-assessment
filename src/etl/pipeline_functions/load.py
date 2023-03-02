@@ -1,8 +1,8 @@
-def upload_resources(conn, resource_type, rows):
+def upload_resources(conn, table_name, number_of_cols, rows):
     cursor = conn.cursor()
-    if resource_type == 'Encounter':
-        for row in rows:
-            query = "INSERT INTO encounters VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(*row)
-            cursor.execute(query)
-        conn.commit()
+    placeholders = ','.join(["'{}'"] *number_of_cols)
+    for row in rows:
+        query = f"INSERT INTO {table_name} VALUES ({placeholders})".format(*row)
+        cursor.execute(query)
+    conn.commit()
     cursor.close()
