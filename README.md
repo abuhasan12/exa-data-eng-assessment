@@ -23,7 +23,7 @@ $ docker run --network=host -v '<path/to/data/directory>':'/fhir-load/data' fhir
 ```
 * If you want logging:
 ```Command Line
-$ docker run --network=host -v '<path/to/data/directory>':'/fhir-load/data' -v 'path/to/logs/directory':'/fhir-load/logs' fhir-load --host <host> --port <port> --user <user> --password <password>
+$ docker run --network=host -v '<path/to/data/directory>':'/fhir-load/data' -v 'path/to/logs/directory':'/fhir-load/logs' abuh12/fhir-load --host <host> --port <port> --user <user> --password <password>
 ```
 * Navigate to localhost:8080/docs in your browser.
 
