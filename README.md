@@ -39,7 +39,7 @@ $ export PYTHON PATH="path/to/repo"
 ```
 * From inside the repo on your terminal run (make sure you have psycopg2 installed):
 ```Command Line
-$ python -m fhir-load --path <path/to/data/directory> --host <postgresql-host> --port <postgresql-port> --user <postgresql-user> --password <postgresql-password> [--database <postgresql-database>]
+$ python -m src/fhir-load --path <path/to/data/directory> --host <postgresql-host> --port <postgresql-port> --user <postgresql-user> --password <postgresql-password> [--database <postgresql-database>]
 ```
 If you are using localhost for postgreSQL, use the 'localhost' in place of 'postgresql-host'
 
