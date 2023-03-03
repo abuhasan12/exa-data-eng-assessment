@@ -10,6 +10,7 @@ $ export PYTHON PATH="path/to/repo"
 * From inside the repo on your terminal run:
 ```Command Line
 $ python -m fhir-load --path <path/to/data/directory> --host <postgresql-host> --port <postgresql-port> --user <postgresql-user> --password <postgresql-password> [--database <postgresql-database>]
+```
 
 ## To Run on Docker
 
