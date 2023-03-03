@@ -50,7 +50,7 @@ def transform_resource(resource: dict) -> list:
 
     # Iterate over each 'column' in the schema to get the value for that column.
     for col, path_to_value in schema.items():
-        value = get_value_for_col(resource, path_to_value)
+        value = get_value_for_col(resource=resource, path_to_value=path_to_value)
         # Add the value to the row.
         new_row.append(value)
 

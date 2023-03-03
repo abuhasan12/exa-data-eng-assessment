@@ -3,3 +3,4 @@
 tests/test_files/
 config.ini
 db_force_disconn.py
+logs/

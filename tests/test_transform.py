@@ -9,7 +9,7 @@ class TestTransform(unittest.TestCase):
         test_json = {
             "resourceType": "Test_Bundle",
             "type": "test_transaction",
-            "entry": [ {
+            "entry": {
                 "fullUrl": "urn:uuid:test_url",
                 "resource": {
                     "resourceType": "TestResource",
@@ -20,9 +20,8 @@ class TestTransform(unittest.TestCase):
                     "url": "TestResource"
                 }
             }
-            ]
         }
-        path_to_value = ['entry', 0, 'request', 'method']
+        path_to_value = ['entry', 'request', 'method']
         expected_value = "''TEST''"
         self.assertEqual(expected_value, get_value_for_col(test_json, path_to_value))
 

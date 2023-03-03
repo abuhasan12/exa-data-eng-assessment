@@ -11,36 +11,7 @@ import psycopg2
 import psycopg2.extensions
 import psycopg2.errors
 
-
-def create_connection(server_config: dict, database_connection: bool) -> psycopg2.extensions.connection:
-    """
-    Creates a connection to the database using the credentials provided by the config.ini file.
-    If database_connection is False, connects to default database.
-
-    :param server_config:
-        The database server configuration dictionary which includes host, port, user, password, and database information.
-    :param database_connection:
-        True of False, whether or not to connect to the database in the config.ini file (otherwise connect to the default database).
-    """
-    try:
-        if database_connection:
-            conn = psycopg2.connect(
-                host=server_config['HOST'],
-                port=server_config['PORT'],
-                user=server_config['USER'],
-                password=server_config['PASSWORD'],
-                database=server_config['DATABASE']
-            )
-        else:
-            conn = psycopg2.connect(
-                host=server_config['HOST'],
-                port=server_config['PORT'],
-                user=server_config['USER'],
-                password=server_config['PASSWORD']
-            )
-        return conn
-    except psycopg2.OperationalError as e:
-        raise Exception("Error connecting to postgreSQL server due to error: {e}")
+from src.database.database_functions.database_connection import create_connection
 
 
 def execute_sql_file(conn: psycopg2.extensions.connection, sql_file: str):
@@ -60,11 +31,10 @@ def execute_sql_file(conn: psycopg2.extensions.connection, sql_file: str):
                 sql_statement += each_line.strip() + ' '
                 if sql_statement.strip().endswith(';'):
                     try:
-                        print(f"Executing SQL command:\n{sql_statement}")
                         cursor.execute(sql_statement)
-                        print("SQL command successfully executed.")
                     except (psycopg2.errors.DuplicateDatabase, psycopg2.errors.DuplicateTable) as e:
                         print(e)
+                        conn.commit()
                     except psycopg2.errors.SyntaxError as e:
                         cursor.close()
                         conn.close()
@@ -75,7 +45,6 @@ def execute_sql_file(conn: psycopg2.extensions.connection, sql_file: str):
         conn.close()
         raise Exception(f"Could not open {sql_file} due to error: {e}")
     conn.commit()
-    print("SQL commands commited.")
     cursor.close()
 
 
@@ -99,7 +68,7 @@ def create_database(server_config: dict):
 
     conn.close()
         
-    conn = create_connection(server_config=server_config, database_connection=True)
+    conn = create_connection(server_config=server_config)
 
     # Creating tables using tables.sql file.
     print("Creating fhir_database tables...")

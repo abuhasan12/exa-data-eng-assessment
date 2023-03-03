@@ -3,7 +3,7 @@ from src.etl.pipeline_functions.extract import *
 
 class TestExtract(unittest.TestCase):
     def setUp(self):
-        self.file_paths = 'tests/test_files/test_data/'
+        self.file_paths = ['tests/test_files/test_data/test.json']
     
     def test_extract_json(self):
         expected_json_data = {
