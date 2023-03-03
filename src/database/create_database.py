@@ -5,7 +5,7 @@ It creates the database and tables by executing the SQL command in the database.
 """
 
 
-import configparser
+import argparse
 
 import psycopg2
 import psycopg2.extensions
@@ -33,14 +33,16 @@ def execute_sql_file(conn: psycopg2.extensions.connection, sql_file: str):
                     try:
                         cursor.execute(sql_statement)
                     except (psycopg2.errors.DuplicateDatabase, psycopg2.errors.DuplicateTable) as e:
-                        print(e)
                         conn.commit()
+                        print(e)
                     except psycopg2.errors.SyntaxError as e:
+                        conn.commit()
                         cursor.close()
                         conn.close()
                         raise Exception(f"Could not execute SQL statement\n{sql_statement}\ndue to error: {e}")
                     sql_statement = ''
     except FileNotFoundError as e:
+        conn.commit()
         cursor.close()
         conn.close()
         raise Exception(f"Could not open {sql_file} due to error: {e}")
@@ -56,53 +58,84 @@ def create_database(server_config: dict):
     :param server_config:
         The database server configuration dictionary which includes host, port, user, password, and database information.
     """
-    print("Opening connection to server...")
-    conn = create_connection(server_config=server_config, database_connection=False)
-    print("Connection established.")
-    
-    conn.autocommit = True
-
     # Creating database using database.sql file.
     print("Creating fhir_database...")
+
+    conn = create_connection(server_config=server_config)
+    conn.autocommit = True
+
     execute_sql_file(conn=conn, sql_file='src/database/database_sql/database.sql')
 
     conn.close()
-        
-    conn = create_connection(server_config=server_config)
+    print("Connection closed.")
 
     # Creating tables using tables.sql file.
     print("Creating fhir_database tables...")
+        
+    server_config['DATABASE'] = 'fhir_database'
+    conn = create_connection(server_config=server_config)
+    
     execute_sql_file(conn=conn, sql_file='src/database/database_sql/tables.sql')
+
+    conn.close()
+    print("Connection closed.")
     
     print("Database and tables successfully created.")
 
-    print("Closing connection...")
-    conn.close()
-    print("Connection closed.")
+
+def get_args() -> argparse.ArgumentParser:
+    """
+    Argument parser function for this file. Sets arguments and parses them for this file.
+
+    :returns:
+        Parsed arguments.
+    """
+    # Argument parser
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        '--host', type=str, required=True,
+        help='The host name of the postgreSQL database server to connect to.'
+    )
+    parser.add_argument(
+        '--port', type=str, required=True,
+        help='The port of the postgreSQL database server to connect to.'
+    )
+    parser.add_argument(
+        '--user', type=str, required=True,
+        help='The username of the postgreSQL database server to connect to.'
+    )
+    parser.add_argument(
+        '--password', type=str, required=True,
+        help='The password of the postgreSQL database server to connect to.'
+    )
+    parser.add_argument(
+        '--database', type=str, required=False, default=None,
+        help='The database of the postgreSQL database server to connect to. If not specified, user will require access to default database.'
+    )
+
+    # Parse args
+    args = parser.parse_args()
+
+    return args
 
 
 def main():
     """
     Running this file will create the database and associated tables in the postgreSQL server whose details are provided in config.ini.
     """
-    config = configparser.ConfigParser()
+    # Get args
+    args = get_args()
 
     # Read postgreSQL configuration from config.ini file.
-    try:
-        print("Reading credentials...")
-        config.read('config.ini')
-
-        # Set up config dictionary.
-        server_config = {
-            'HOST': config.get('Server', 'HOST'),
-            'PORT': config.get('Server', 'PORT'),
-            'USER': config.get('Server', 'USER'),
-            'PASSWORD': config.get('Server', 'PASSWORD'),
-            'DATABASE': config.get('Server', 'DATABASE')
-        }
-        print("Credential loaded.")
-    except configparser.Error as e:
-        raise Exception(f"Could not read config file due to error: {e}")
+    server_config = {
+        'HOST': args.host,
+        'PORT': args.port,
+        'USER': args.user,
+        'PASSWORD': args.password,
+        'DATABASE': args.database
+    }
+    print("Server credentials loaded.")
 
     # Create database and tables.
     create_database(server_config=server_config)

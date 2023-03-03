@@ -42,6 +42,9 @@ def transform_resource(resource: dict) -> list:
 
     :param resource:
         JSON data containing values nested in that need to be extracted to insert to the table of the resource type.
+
+    :returns:
+        The row of extracted values as a list.
     """
     # Map for columns to the values nested in the JSON data.
     schema = SCHEMAS[resource['resource']['resourceType']]['json_schema']

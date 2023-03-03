@@ -1,7 +1,7 @@
 
 """
 Load function upload_resource() batch inserts rows into a table.
-The function receives the number of columns to create the placeholders in the SQL query string.
+The function receives the number of columns to create the value_placeholders in the SQL query string.
 """
 
 
@@ -31,12 +31,12 @@ def upload_resources(conn: psycopg2.extensions.connection, table_name: str, num_
     """
     cursor = conn.cursor()
 
-    # Create number of placeholders from the number of columns.
-    placeholders = ','.join(["'{}'"] *num_cols)
+    # Create number of value_placeholders from the number of columns.
+    value_placeholders = ','.join(["'{}'"] *num_cols)
 
     # Iterate over the rows to insert.
     for row in rows:
-        query = f"INSERT INTO {table_name} VALUES ({placeholders})".format(*row)
+        query = f"INSERT INTO {table_name} VALUES ({value_placeholders})".format(*row)
 
         try:
             cursor.execute(query)
