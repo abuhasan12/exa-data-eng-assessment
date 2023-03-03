@@ -16,4 +16,4 @@ ENV PYTHONPATH "${PYTHONPATH}:/fhir-load"
 LABEL maintainer="Abu Hasan" \
       version="1.0"
 
-ENTRYPOINT ["python", "fhir-load.py"]
+ENTRYPOINT ["python", "src/fhir_load.py"]

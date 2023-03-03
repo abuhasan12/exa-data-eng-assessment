@@ -1,1 +1,0 @@
-CREATE DATABASE fhir_database;

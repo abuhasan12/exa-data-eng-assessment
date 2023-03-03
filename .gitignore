@@ -1,5 +1,12 @@
+**__init__.py
 **/.pytest_cache/
 **/__pycache__/
-tests/test_files/
+**.eggs/
+build/
+dist/
+**.egg-info/
 logs/*
+tests/test_files/
+requirements.txt
 .dockerignore
+.gitignore

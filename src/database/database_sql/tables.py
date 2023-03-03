@@ -1,4 +1,5 @@
-CREATE TABLE care_plans (
+tables_sql = [
+"""CREATE TABLE care_plans (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
   resource_type VARCHAR(50),
@@ -13,8 +14,8 @@ CREATE TABLE care_plans (
   care_team JSONB,
   addresses JSONB,
   activity JSONB
-);
-CREATE TABLE claims (
+);""",
+"""CREATE TABLE claims (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
   resource_type VARCHAR(50),
@@ -40,8 +41,8 @@ CREATE TABLE claims (
   item JSONB,
   total_value TEXT,
   total_currency VARCHAR(4)
-);
-CREATE TABLE conditions (
+);""",
+"""CREATE TABLE conditions (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
   resource_type VARCHAR(50),
@@ -55,8 +56,8 @@ CREATE TABLE conditions (
   encounter_reference VARCHAR(45),
   onset_date_time TIMESTAMP WITH TIME ZONE,
   recorded_date TIMESTAMP WITH TIME ZONE
-);
-CREATE TABLE diagnostic_reports (
+);""",
+"""CREATE TABLE diagnostic_reports (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
   resource_type VARCHAR(50),
@@ -72,8 +73,8 @@ CREATE TABLE diagnostic_reports (
   performer JSONB,
   result JSONB,
   presented_form JSONB
-);
-CREATE TABLE document_references (
+);""",
+"""CREATE TABLE document_references (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
   resource_type VARCHAR(50),
@@ -90,8 +91,8 @@ CREATE TABLE document_references (
   context_encounter JSONB,
   context_period_start TIMESTAMP WITH TIME ZONE,
   context_period_end TIMESTAMP WITH TIME ZONE
-);
-CREATE TABLE encounters (
+);""",
+"""CREATE TABLE encounters (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
   resource_type VARCHAR(50),
@@ -110,8 +111,8 @@ CREATE TABLE encounters (
   location JSONB,
   service_provider_reference TEXT,
   service_provider TEXT
-);
-CREATE TABLE explanation_of_benefits (
+);""",
+"""CREATE TABLE explanation_of_benefits (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
   resource_type VARCHAR(50),
@@ -139,8 +140,8 @@ CREATE TABLE explanation_of_benefits (
   total JSONB,
   payment_amount_value TEXT,
   payment_amount_currency VARCHAR(4)
-);
-CREATE TABLE medication_requests (
+);""",
+"""CREATE TABLE medication_requests (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
   resource_type VARCHAR(50),
@@ -157,8 +158,8 @@ CREATE TABLE medication_requests (
   requester TEXT,
   reason_reference JSONB,
   dosage_instruction JSONB
-);
-CREATE TABLE patients (
+);""",
+"""CREATE TABLE patients (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
   resource_type VARCHAR(50),
@@ -176,8 +177,8 @@ CREATE TABLE patients (
   multiple_birth VARCHAR(5),
   multiple_birth_amount VARCHAR(5),
   communication JSONB
-);
-CREATE TABLE procedures (
+);""",
+"""CREATE TABLE procedures (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
   resource_type VARCHAR(50),
@@ -192,4 +193,5 @@ CREATE TABLE procedures (
   location_reference TEXT,
   location TEXT,
   reason_reference JSONB
-);
+);"""
+]
