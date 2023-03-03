@@ -8,7 +8,6 @@ The data is held in a 'data' folder, and the database configuration details are 
 import os
 import sys
 import argparse
-import configparser
 
 from src.database.create_database import create_database
 from src.etl.pipeline import pipeline
@@ -25,10 +24,6 @@ def get_args() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
 
     # Add arguments
-    parser.add_argument(
-        '--path', type=str, required=True,
-        help='The path to the data directory.'
-    )
     parser.add_argument(
         '--host', type=str, required=True,
         help='The host name of the postgreSQL database server to connect to.'
@@ -49,6 +44,10 @@ def get_args() -> argparse.ArgumentParser:
         '--database', type=str, required=False, default=None,
         help='The database of the postgreSQL database server to connect to. If not specified, user will require access to default database.'
     )
+    parser.add_argument(
+        '--path', type=str, required=False, default=None,
+        help='The path to the data directory.'
+    )
 
     # Parse args
     args = parser.parse_args()
@@ -65,6 +64,16 @@ def main():
     args = get_args()
 
     data_dir = args.path
+
+    if not data_dir:
+        if os.environ.get('DOCKER_CONTAINER'):
+            data_dir = 'data/'
+        else:
+            print("""usage: fhir-load.py [-h] --path PATH --host HOST --port PORT --user USER
+                        --password PASSWORD [--database DATABASE]
+                \nthe following arguments are required: --path, --host, --port, --user, --password
+            """)
+            sys.exit(1)
 
     if not os.path.isdir(data_dir):
         print(f"{data_dir} is not a folder.")
