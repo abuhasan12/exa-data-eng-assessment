@@ -54,16 +54,25 @@ def pipeline(json_file_paths: list, server_config: dict):
 
     # Initialise dictionary to hold the rows of data.
     data_rows = {
+        'AllergyIntolerance': [],
         'CarePlan': [],
         'Claim': [],
         'Condition': [],
+        'Device': [],
         'DiagnosticReport': [],
         'DocumentReference': [],
         'Encounter': [],
         'ExplanationOfBenefit': [],
+        'ImagingStudy': [],
+        'Immunization': [],
+        'Medication': [],
+        'MedicationAdministration': [],
         'MedicationRequest': [],
+        'Observation': [],
         'Patient': [],
-        'Procedure': []
+        'Procedure': [],
+        'Provenance': [],
+        'SupplyDelivery': []
     }
     
     # Connect to database.
@@ -78,7 +87,6 @@ def pipeline(json_file_paths: list, server_config: dict):
 
     # Iterate over resources from the JSON data extracted from the files.
     for resource in extract.extract_resources(json_file_paths=json_file_paths):
-
 
         # Only transform resource types in dictionary.
         if resource['resource']['resourceType'] in data_rows:

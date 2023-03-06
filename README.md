@@ -42,19 +42,3 @@ $ export PYTHON PATH="path/to/repo"
 $ python -m src/fhir-load --path <path/to/data/directory> --host <postgresql-host> --port <postgresql-port> --user <postgresql-user> --password <postgresql-password> [--database <postgresql-database>]
 ```
 If you are using localhost for postgreSQL, use the 'localhost' in place of 'postgresql-host'
-
-## Next Steps
-
-Will add support for more resources.
-Currently only the following resources are supported:
-
-* CarePlan
-* Claim
-* Condition
-* DiagnosticReport
-* DocumentReference
-* Encounter
-* ExplanationOfBenefit
-* MedicationRequest
-* Patient
-* Procedure

@@ -1,4 +1,19 @@
 tables_sql = [
+"""CREATE TABLE allergy_intolerances (
+  id VARCHAR(45) PRIMARY KEY,
+  request_method VARCHAR(7),
+  resource_type VARCHAR(50),
+  resource_id VARCHAR(36),
+  clinical_status JSONB,
+  verification_status JSONB,
+  type VARCHAR(25),
+  category JSONB,
+  criticality VARCHAR(25),
+  code_coding JSONB,
+  patient_reference VARCHAR(45),
+  recorded_date TIMESTAMP WITH TIME ZONE,
+  reaction JSONB
+);""",
 """CREATE TABLE care_plans (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
@@ -56,6 +71,22 @@ tables_sql = [
   encounter_reference VARCHAR(45),
   onset_date_time TIMESTAMP WITH TIME ZONE,
   recorded_date TIMESTAMP WITH TIME ZONE
+);""",
+"""CREATE TABLE devices (
+  id VARCHAR(45) PRIMARY KEY,
+  request_method VARCHAR(7),
+  resource_type VARCHAR(50),
+  resource_id VARCHAR(36),
+  udi_carrier JSONB,
+  status TEXT,
+  distinct_identifier TEXT,
+  manufacture_date TIMESTAMP WITH TIME ZONE,
+  expiration_date TIMESTAMP WITH TIME ZONE,
+  lot_number TEXT,
+  serial_number TEXT,
+  device_name JSONB,
+  type_coding JSONB,
+  patient_reference VARCHAR(45)
 );""",
 """CREATE TABLE diagnostic_reports (
   id VARCHAR(45) PRIMARY KEY,
@@ -141,6 +172,60 @@ tables_sql = [
   payment_amount_value TEXT,
   payment_amount_currency VARCHAR(4)
 );""",
+"""CREATE TABLE imaging_studies (
+  id VARCHAR(45) PRIMARY KEY,
+  request_method VARCHAR(7),
+  resource_type VARCHAR(50),
+  resource_id VARCHAR(36),
+  identifier JSONB,
+  status VARCHAR(25),
+  subject_reference VARCHAR(45),
+  encounter_reference VARCHAR(45),
+  started_date_time TEXT,
+  num_series TEXT,
+  num_instances TEXT,
+  procedure JSONB,
+  location_reference TEXT,
+  location TEXT,
+  series JSONB
+);""",
+"""CREATE TABLE immunizations (
+  id VARCHAR(45) PRIMARY KEY,
+  request_method VARCHAR(7),
+  resource_type VARCHAR(50),
+  resource_id VARCHAR(36),
+  status VARCHAR(25),
+  vaccine_code JSONB,
+  vaccine TEXT,
+  patient_reference VARCHAR(45),
+  encounter_reference VARCHAR(45),
+  occurence_date_time TIMESTAMP WITH TIME ZONE,
+  primary_source TEXT,
+  location_reference TEXT,
+  location TEXT
+);""",
+"""CREATE TABLE medications (
+  id VARCHAR(45) PRIMARY KEY,
+  request_method VARCHAR(7),
+  resource_type VARCHAR(50),
+  resource_id VARCHAR(36),
+  code_coding JSONB,
+  status VARCHAR(25)
+);""",
+"""CREATE TABLE medicaiton_administrations (
+  id VARCHAR(45) PRIMARY KEY,
+  request_method VARCHAR(7),
+  resource_type VARCHAR(50),
+  resource_id VARCHAR(36),
+  medication_code JSONB,
+  medication TEXT,
+  subject_reference VARCHAR(45),
+  context_reference VARCHAR(45),
+  effective_date_time TEXT,
+  reason_reference JSONB,
+  dosage_value TEXT,
+  dosage_rate TEXT
+);""",
 """CREATE TABLE medication_requests (
   id VARCHAR(45) PRIMARY KEY,
   request_method VARCHAR(7),
@@ -158,6 +243,24 @@ tables_sql = [
   requester TEXT,
   reason_reference JSONB,
   dosage_instruction JSONB
+);""",
+"""CREATE TABLE observations (
+  id VARCHAR(45) PRIMARY KEY,
+  request_method VARCHAR(7),
+  resource_type VARCHAR(50),
+  resource_id VARCHAR(36),
+  status VARCHAR(25),
+  category JSONB,
+  code_coding JSONB,
+  subject_reference VARCHAR(45),
+  encounter_reference VARCHAR(45),
+  effective_date_time TEXT,
+  issued_date_time TEXT,
+  component JSONB,
+  value_code JSONB,
+  value_text TEXT,
+  value TEXT,
+  unit VARCHAR(25)
 );""",
 """CREATE TABLE patients (
   id VARCHAR(45) PRIMARY KEY,
@@ -193,5 +296,26 @@ tables_sql = [
   location_reference TEXT,
   location TEXT,
   reason_reference JSONB
+);""",
+"""CREATE TABLE provenances (
+  id VARCHAR(45) PRIMARY KEY,
+  request_method VARCHAR(7),
+  resource_type VARCHAR(50),
+  resource_id VARCHAR(36),
+  target JSONB,
+  recorded_date TIMESTAMP WITH TIME ZONE,
+  agent JSONB
+);""",
+"""CREATE TABLE supply_deliveries (
+  id VARCHAR(45) PRIMARY KEY,
+  request_method VARCHAR(7),
+  resource_type VARCHAR(50),
+  resource_id VARCHAR(36),
+  patient_reference VARCHAR(45),
+  type_coding JSONB,
+  supplied_quantity TEXT,
+  item_code JSONB,
+  item TEXT,
+  occurence_date_time TIMESTAMP WITH TIME ZONE
 );"""
 ]
