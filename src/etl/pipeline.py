@@ -68,6 +68,7 @@ def pipeline(json_file_paths: list, server_config: dict):
     
     # Connect to database.
     conn = create_connection(server_config=server_config)
+    conn.autocommit = False
 
     print(f"Loading {len(json_file_paths)} files to database.")
     start_time = time.time()
@@ -88,8 +89,8 @@ def pipeline(json_file_paths: list, server_config: dict):
             # Append the transformed row to the dictionary.
             data_rows[resource_type].append(transformed_resource)
         
-            # If row amounts reach 10000, insert to database as batch.
-            if len(data_rows[resource_type]) == 10000:
+            # If row amounts reach 1000, insert to database as batch.
+            if len(data_rows[resource_type]) == 1000:
                 table_name = SCHEMAS[resource_type]['table_meta']['table_name']
                 num_cols = len(SCHEMAS[resource_type]['json_schema'])
 
@@ -114,12 +115,12 @@ def pipeline(json_file_paths: list, server_config: dict):
 
     duplicates = get_duplicate_entries_count(logs_dir=logs_dir)
 
-    i -= duplicates
-
+    if len(os.listdir(logs_dir)) > num_logs:
+        i -= duplicates
+        print("WARNING: There were some errors when inserting to database. Check log file.")
+    
     print(f"{i} resources extracted, processed, and loaded to database in {end_time - start_time} seconds.")
 
-    if len(os.listdir(logs_dir)) > num_logs:
-        print("WARNING: There were some errors when inserting to database. Check log file.")
 
 
 def get_args() -> argparse.ArgumentParser:
