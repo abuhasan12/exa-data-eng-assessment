@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='fhir-load',
-    version='1.0',
+    version='1.2',
     description='This program loads FHIR Transaction Bundle data to resource tables in a postgreSQL database called fhir_database.',
     packages=find_packages(),
     entry_points={
