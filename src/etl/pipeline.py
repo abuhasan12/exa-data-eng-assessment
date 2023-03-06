@@ -43,6 +43,7 @@ def pipeline(json_file_paths: list, server_config: dict):
     :param server_config:
         The database server configuration dictionary which includes host, port, user, password, and database information.
     """
+
     # Logging
     logs_dir = 'logs'
     if not os.path.exists(logs_dir):
@@ -79,7 +80,8 @@ def pipeline(json_file_paths: list, server_config: dict):
     conn = create_connection(server_config=server_config)
     conn.autocommit = False
 
-    print(f"Loading {len(json_file_paths)} files to database.")
+    print(f"Loading {len(json_file_paths)} files to database...")
+
     start_time = time.time()
     
     # Resources count
@@ -120,6 +122,7 @@ def pipeline(json_file_paths: list, server_config: dict):
     end_time = time.time()
 
     conn.close()
+    print("Connection closed.")
 
     duplicates = get_duplicate_entries_count(logs_dir=logs_dir)
 
