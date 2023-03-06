@@ -2,6 +2,7 @@ import unittest
 import psycopg2
 from src.database.create_database import *
 from tests.test_files.test_config import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE
+from tests.test_files import test_database, test_tables
 
 class TestCreateDatabase(unittest.TestCase):
     def setUp(self):
@@ -13,7 +14,7 @@ class TestCreateDatabase(unittest.TestCase):
             'DATABASE': DB_DATABASE
         }
 
-    def test_execute_sql_file_database(self):
+    def test_execute_sql_commands_database(self):
         conn = psycopg2.connect(
             host=self.server_config['HOST'],
             port=self.server_config['PORT'],
@@ -21,7 +22,7 @@ class TestCreateDatabase(unittest.TestCase):
             password=self.server_config['PASSWORD']
         )
         conn.autocommit = True
-        execute_sql_file(conn=conn, sql_file='tests/test_files/test_database.sql')
+        execute_sql_commands(conn=conn, sql=test_database.database_sql)
         cursor = conn.cursor()
         cursor.execute(f"SELECT datname FROM pg_database WHERE datname='fhir_database_test'")
         result = cursor.fetchall()
@@ -38,7 +39,7 @@ class TestCreateDatabase(unittest.TestCase):
             password=self.server_config['PASSWORD']
         )
         conn.autocommit = True
-        execute_sql_file(conn=conn, sql_file='tests/test_files/test_database.sql')
+        execute_sql_commands(conn=conn, sql=test_database.database_sql)
         conn.close()
         conn = psycopg2.connect(
             host=self.server_config['HOST'],
@@ -47,7 +48,7 @@ class TestCreateDatabase(unittest.TestCase):
             password=self.server_config['PASSWORD'],
             database=self.server_config['DATABASE']
         )
-        execute_sql_file(conn=conn, sql_file='tests/test_files/test_tables.sql')
+        execute_sql_commands(conn=conn, sql=test_tables.tables_sql)
         cursor = conn.cursor()
         cursor.execute("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'test_table_one')")
         result = cursor.fetchall()

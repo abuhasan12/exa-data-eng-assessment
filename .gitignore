@@ -7,6 +7,4 @@ dist/
 **.egg-info/
 logs/*
 tests/test_files/
-requirements.txt
 .dockerignore
-.gitignore

@@ -16,6 +16,20 @@ from src.etl.pipeline_functions import extract, transform, load
 from src.etl.resources.schemas import SCHEMAS
 
 
+def get_duplicate_entries_count(logs_dir):
+    dup_str = 'duplicate key value'
+
+    log_files = [os.path.join(logs_dir, file_name) for file_name in os.listdir(logs_dir)]
+    log_file = sorted(log_files, key=os.path.getmtime, reverse=True)[0]
+
+    count = 0
+    with open(log_file, 'r') as f:
+        for line in f:
+            count += line.count(dup_str)
+    
+    return count
+
+
 def pipeline(json_file_paths: list, server_config: dict):
     """
     Pipeline function creates a dictionary to hold the lists of all the rows for each resource type to load into the database.
@@ -57,28 +71,34 @@ def pipeline(json_file_paths: list, server_config: dict):
 
     print(f"Loading {len(json_file_paths)} files to database.")
     start_time = time.time()
+    
+    # Resources count
+    i = 0
 
     # Iterate over resources from the JSON data extracted from the files.
-    for resource in extract.extract_resources(json_file_paths):
+    for resource in extract.extract_resources(json_file_paths=json_file_paths):
 
-        resource_type = resource['resource']['resourceType']
 
         # Only transform resource types in dictionary.
         if resource['resource']['resourceType'] in data_rows:
             transformed_resource = transform.transform_resource(resource)
+            
+            resource_type = resource['resource']['resourceType']
 
             # Append the transformed row to the dictionary.
             data_rows[resource_type].append(transformed_resource)
         
-            # If row amounts reach 1000, insert to database as batch.
-            if len(data_rows[resource_type]) == 1000:
+            # If row amounts reach 10000, insert to database as batch.
+            if len(data_rows[resource_type]) == 10000:
                 table_name = SCHEMAS[resource_type]['table_meta']['table_name']
                 num_cols = len(SCHEMAS[resource_type]['json_schema'])
 
-                load.upload_resources(conn, table_name, num_cols, data_rows[resource_type])
+                load.upload_resources(conn=conn, table_name=table_name, num_cols=num_cols, rows=data_rows[resource_type])
 
                 # Empty list of rows for next batch.
                 data_rows[resource_type] = []
+
+            i += 1
 
     # Loop through the data if any left and insert the data as batches to table
     for resource_type, rows in data_rows.items():
@@ -86,13 +106,17 @@ def pipeline(json_file_paths: list, server_config: dict):
             table_name = SCHEMAS[resource_type]['table_meta']['table_name']
             num_cols = len(SCHEMAS[resource_type]['json_schema'])
 
-            load.upload_resources(conn, table_name, num_cols, rows)
+            load.upload_resources(conn=conn, table_name=table_name, num_cols=num_cols, rows=rows)
     
     end_time = time.time()
 
     conn.close()
 
-    print(f"All files extracted, processed, and loaded to database in {end_time - start_time} seconds.")
+    duplicates = get_duplicate_entries_count(logs_dir=logs_dir)
+
+    i -= duplicates
+
+    print(f"{i} resources extracted, processed, and loaded to database in {end_time - start_time} seconds.")
 
     if len(os.listdir(logs_dir)) > num_logs:
         print("WARNING: There were some errors when inserting to database. Check log file.")

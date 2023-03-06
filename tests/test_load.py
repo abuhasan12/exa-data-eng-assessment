@@ -1,9 +1,10 @@
 import unittest
 from src.etl.pipeline_functions.load import *
 import psycopg2
-from src.database.create_database import execute_sql_file
+from src.database.create_database import execute_sql_commands
 from tests.test_files.test_config import DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE
 from tests.test_files.test_schemas import SCHEMAS
+from tests.test_files import test_database, test_tables
 
 class TestLoad(unittest.TestCase):
     def setUp(self):
@@ -21,7 +22,7 @@ class TestLoad(unittest.TestCase):
             password=self.server_config['PASSWORD']
         )
         conn.autocommit = True
-        execute_sql_file(conn=conn, sql_file='tests/test_files/test_database.sql')
+        execute_sql_commands(conn=conn, sql=test_database.database_sql)
         conn.close()
         conn = psycopg2.connect(
             host=self.server_config['HOST'],
@@ -30,7 +31,7 @@ class TestLoad(unittest.TestCase):
             password=self.server_config['PASSWORD'],
             database=self.server_config['DATABASE']
         )
-        execute_sql_file(conn=conn, sql_file='tests/test_files/test_tables.sql')
+        execute_sql_commands(conn=conn, sql=test_tables.tables_sql)
         conn.close()
 
     def test_upload_resources(self):

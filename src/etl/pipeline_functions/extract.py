@@ -1,15 +1,15 @@
 """
-Extract functions extract_json() and extract_resources() are used to yield data one at a time to process.
-extract_json() parses the json data of each file and extract_resources returns the resources one-by-one in the 'entry' list of each file.
+Extract function extract_resources() is used to return the resources of each file.
 """
 
 
 import json
 
 
-def extract_json(json_file_paths: list):
+def extract_resources(json_file_paths: list):
     """
-    Iterates over the files in the file path and parses JSON data from each file to generate for the processing iterations.
+    Iterates over the files in the file path and parses JSON data from each file.
+    Iterates over the json data and startes generating the 'resources' in the 'entry' json object'.
 
     :param json_file_paths:
         List of strings of valid file paths of the JSON files to process.
@@ -18,23 +18,12 @@ def extract_json(json_file_paths: list):
         try:
             with open(json_file_path, 'r', encoding='utf-8') as f:
                 json_data = json.load(f)
-                yield json_data
+                try:
+                    for resource in json_data['entry']:
+                        yield resource
+                except (KeyError, TypeError) as e:
+                    print(f"Could not extract resources: {e}")
         except (FileNotFoundError) as e:
             print(f"There was an error when opening file {json_file_path}: {e}")
         except json.JSONDecodeError as e:
             print(f"There was an error when decoding the file {json_file_path}: {e}")
-
-
-def extract_resources(json_file_paths: list):
-    """
-    Iterates over the JSON data returned by extract_json() and starts generating the iteration for the 'resources' in the 'entry' list.
-
-    :param json_file_paths:
-        List of strings of valid file paths of the JSON files to process.
-    """
-    for json_data in extract_json(json_file_paths):
-        try:
-            for resource in json_data['entry']:
-                yield resource
-        except (KeyError, TypeError) as e:
-            print(f"Could not extract resources: {e}")

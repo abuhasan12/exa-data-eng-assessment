@@ -22,21 +22,20 @@ def execute_sql_commands(conn: psycopg2.extensions.connection, sql: list):
     :param conn: psycopg2 connection to a postgreSQL sever database.
     :param sql: contents of the SQL file to be executed.
     """
-    cursor = conn.cursor()
-    for sql_statement in sql:
-        try:
-            cursor.execute(sql_statement)
-        except (psycopg2.errors.DuplicateDatabase, psycopg2.errors.DuplicateTable) as e:
-            conn.rollback()
-            print(e)
-        except psycopg2.errors.SyntaxError as e:
-            conn.rollback()
-            cursor.close()
-            conn.close()
-            raise Exception(f"Could not execute SQL statement\n{sql_statement}\ndue to error: {e}")
-        sql_statement = ''
-    conn.commit()
-    cursor.close()
+    with conn.cursor() as cursor:
+        for sql_statement in sql:
+            try:
+                cursor.execute(sql_statement)
+            except (psycopg2.errors.DuplicateDatabase, psycopg2.errors.DuplicateTable) as e:
+                conn.rollback()
+                print(e)
+            except psycopg2.errors.SyntaxError as e:
+                conn.rollback()
+                cursor.close()
+                conn.close()
+                raise Exception(f"Could not execute SQL statement\n{sql_statement}\ndue to error: {e}")
+            sql_statement = ''
+        conn.commit()
 
 
 def create_database(server_config: dict):

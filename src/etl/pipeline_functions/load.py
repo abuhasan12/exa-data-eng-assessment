@@ -12,7 +12,6 @@ import datetime
 import psycopg2.errors
 import psycopg2.extensions
 
-
 errors = False
 
 
@@ -29,6 +28,7 @@ def upload_resources(conn: psycopg2.extensions.connection, table_name: str, num_
     :param rows:
         The list of rows to insert into the table.
     """
+
     cursor = conn.cursor()
 
     # Create number of value_placeholders from the number of columns.
