@@ -39,4 +39,4 @@ def create_connection(server_config: dict) -> psycopg2.extensions.connection:
         print("Connection to server established.")
         return conn
     except psycopg2.OperationalError as e:
-        raise Exception("Error connecting to postgreSQL server due to error: {e}")
+        raise Exception(f"Error connecting to postgreSQL server due to error: {e}")

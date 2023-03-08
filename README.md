@@ -5,6 +5,8 @@ This program loads FHIR Transaction Bundle data to resource tables in a postgreS
 
 ![result](https://github.com/abuhasan12/exa-data-eng-assessment/blob/main/demo/result.png)
 
+![dockercompose](https://github.com/abuhasan12/exa-data-eng-assessment/blob/main/demo/docker_compose.png)
+
 ![data](https://github.com/abuhasan12/exa-data-eng-assessment/blob/main/demo/data.png)
 
 ## To Run using Pip
@@ -18,6 +20,29 @@ $ pip install fhir-load
 $ fhir-load --path <path/to/data/directory> --host <postgresql-host> --port <postgresql-port> --user <postgresql-user> --password <postgresql-password> [--database <postgresql-database>]
 ```
 If you are using localhost for postgreSQL, use the 'localhost' in place of 'postgresql-host'
+
+## To Run with Docker hosted PostgreSQL database
+
+* Pre-requisites:
+1. Clone/copy docker-compose.yml file.
+2. Edit the following in the file - POSTGRESQL_PASSWORD, --password, path/to/data/directory.
+3. Navigate to the directory holding the file in the command line.
+* To run:
+```Command Line
+$ docker-compose up
+```
+* To take down (use CTRL + C to exit to command line again):
+```Command Line
+$ docker-compose down
+```
+* To run in background:
+```Command Line
+$ docker-compose up -d
+```
+* To remove data from docker volume:
+```Command Line
+$ docker-compose down --volumes
+```
 
 ## To Run on Docker
 

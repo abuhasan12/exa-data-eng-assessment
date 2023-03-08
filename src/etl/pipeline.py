@@ -17,15 +17,16 @@ from src.etl.resources.schemas import SCHEMAS
 
 
 def get_duplicate_entries_count(logs_dir):
+    count = 0
     dup_str = 'duplicate key value'
 
     log_files = [os.path.join(logs_dir, file_name) for file_name in os.listdir(logs_dir)]
-    log_file = sorted(log_files, key=os.path.getmtime, reverse=True)[0]
+    if log_files:
+        log_file = sorted(log_files, key=os.path.getmtime, reverse=True)[0]
 
-    count = 0
-    with open(log_file, 'r') as f:
-        for line in f:
-            count += line.count(dup_str)
+        with open(log_file, 'r') as f:
+            for line in f:
+                count += line.count(dup_str)
     
     return count
 
