@@ -5,7 +5,7 @@ This program loads FHIR Transaction Bundle data to resource tables in a postgreS
 
 ![result](https://github.com/abuhasan12/exa-data-eng-assessment/blob/main/demo/result.png)
 
-![dockercompose](https://github.com/abuhasan12/exa-data-eng-assessment/blob/main/demo/docker_compose.png)
+![dockercompose](https://github.com/abuhasan12/exa-data-eng-assessment/blob/main/demo/docker_compose.gif)
 
 ![data](https://github.com/abuhasan12/exa-data-eng-assessment/blob/main/demo/data.png)
 
